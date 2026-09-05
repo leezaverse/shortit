@@ -1,0 +1,36 @@
+<input type="text" placeholder="Enter long url" id="input" />
+<button id="gen">Generate</button>
+<div id="output"></div>
+
+<script>
+    function generate() {
+        const longUrlPtr = document.getElementById("input");
+        const longUrlValue = longUrlPtr.value;
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify({
+            "longUrl": longUrlValue
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch("http://localhost:2005/shortenUrl", requestOptions)
+            .then((response) => response.json())
+            .then((result) =>{ 
+                console.log(result)
+                const divPtr = document.getElementById("output");
+                divPtr.innerHTML = result["shortKey"];
+            })
+            .catch((error) => console.error(error));
+    }
+
+    const genPtr = document.getElementById("gen");
+    genPtr.addEventListener('click', generate);
+</script>
