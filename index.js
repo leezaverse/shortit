@@ -55,22 +55,3 @@ function randomString() {
 app.listen(PORT, ()=>{
     console.log(`Server is running at ${PORT}`);
 })
-
-
-/*
-Missing: 
-* Frontend: Input validation before API calling
-* Frontend: Response not clickable and user-friendly
-* Frontend: Error handling
-* Backend: Input validation
-* Backend: Error handling - try-catch
-* Backend: DB integration
-* Backend: Logic for not generating new random string for existing  same url.
-* Backend : Code refactoring
-* Frontend : Code refactoring
-
-
-Optional:
-* Custom short string
-* Short url expiry
-*/

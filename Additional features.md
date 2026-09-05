@@ -1,5 +1,5 @@
 ### Missing
-1. Frontend: Input validation before API calling
+1. ~~Frontend: Input validation before API calling~~ (Done)
 1. Frontend: Response not clickable and user-friendly
 1. Frontend: Error handling
 1. Frontend : Code refactoring

@@ -5,7 +5,18 @@
 <script>
     function generate() {
         const longUrlPtr = document.getElementById("input");
-        const longUrlValue = longUrlPtr.value;
+        const longUrlValue = longUrlPtr.value.trim();
+        const divPtr = document.getElementById("output");
+
+        try {
+            const url = new URL(longUrlValue);
+            if (!['http:', 'https:'].includes(url.protocol)) {
+                throw new Error();
+            }
+        } catch (error) {
+            divPtr.innerHTML = "Please enter a valid URL.";
+            return;
+        }
 
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -25,7 +36,6 @@
             .then((response) => response.json())
             .then((result) =>{ 
                 console.log(result)
-                const divPtr = document.getElementById("output");
                 divPtr.innerHTML = result["shortKey"];
             })
             .catch((error) => console.error(error));
