@@ -1,9 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const app = new express();
 
 const PORT = 2005;
 
 app.use(express.json());
+app.use(cors());
 
 let shortToLong = {};
 
