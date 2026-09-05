@@ -3,43 +3,67 @@
 <div id="output"></div>
 
 <script>
-    function generate() {
-        const longUrlPtr = document.getElementById("input");
-        const longUrlValue = longUrlPtr.value.trim();
-        const divPtr = document.getElementById("output");
-
+    function isValidUrl(value) {
         try {
-            const url = new URL(longUrlValue);
-            if (!['http:', 'https:'].includes(url.protocol)) {
-                throw new Error();
-            }
+            const url = new URL(value);
+            return ['http:', 'https:'].includes(url.protocol);
         } catch (error) {
-            divPtr.innerHTML = "Please enter a valid URL.";
+            return false;
+        }
+    }
+
+    function showMessage(message) {
+        document.getElementById("output").textContent = message;
+    }
+
+    function showShortUrl(shortKey) {
+        const shortUrl = `${window.location.origin}/${shortKey}`;
+        const output = document.getElementById("output");
+        const link = document.createElement("a");
+
+        link.href = shortUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = shortUrl;
+
+        output.textContent = "Short URL: ";
+        output.appendChild(link);
+    }
+
+    function shortenUrl(longUrl) {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "longUrl": longUrl
+            })
+        };
+
+        return fetch("http://localhost:2005/shortenUrl", requestOptions)
+            .then((response) => response.json().then((result) => {
+                if (!response.ok) {
+                    throw new Error(result["error"] || "Unable to shorten URL.");
+                }
+                return result;
+            }));
+    }
+
+    function generate() {
+        const longUrlValue = document.getElementById("input").value.trim();
+
+        if (!isValidUrl(longUrlValue)) {
+            showMessage("Please enter a valid URL.");
             return;
         }
 
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const raw = JSON.stringify({
-            "longUrl": longUrlValue
-        });
-
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: raw,
-            redirect: "follow"
-        };
-
-        fetch("http://localhost:2005/shortenUrl", requestOptions)
-            .then((response) => response.json())
-            .then((result) =>{ 
-                console.log(result)
-                const shortUrl = `${window.location.origin}/${result["shortKey"]}`;
-                divPtr.innerHTML = `Short URL: <a href="${shortUrl}" target="_blank" rel="noopener noreferrer">${shortUrl}</a>`;
-            })
-            .catch((error) => console.error(error));
+        shortenUrl(longUrlValue)
+            .then((result) => showShortUrl(result["shortKey"]))
+            .catch((error) => {
+                console.error(error);
+                showMessage(error.message);
+            });
     }
 
     const genPtr = document.getElementById("gen");

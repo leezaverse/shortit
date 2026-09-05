@@ -19,8 +19,15 @@ output :
     * shortkey - string
 */
 app.post('/shortenUrl', (req, res)=>{
+    const long = typeof req.body?.longUrl === 'string' ? req.body.longUrl.trim() : '';
+
+    if (!isValidUrl(long)) {
+        return res.status(400).send({
+            "error": "Please provide a valid URL."
+        });
+    }
+
     const short = randomString();
-    const long = req.body.longUrl;
 
     console.log(`\n\n\nkey to longurl : ${long} is ${short}`);
 
@@ -31,6 +38,15 @@ app.post('/shortenUrl', (req, res)=>{
         "shortKey": short
     });
 })
+
+function isValidUrl(value) {
+    try {
+        const url = new URL(value);
+        return ['http:', 'https:'].includes(url.protocol);
+    } catch (error) {
+        return false;
+    }
+}
 
 /* 
 path : [GET] /:shortKey 
