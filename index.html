@@ -36,7 +36,8 @@
             .then((response) => response.json())
             .then((result) =>{ 
                 console.log(result)
-                divPtr.innerHTML = result["shortKey"];
+                const shortUrl = `${window.location.origin}/${result["shortKey"]}`;
+                divPtr.innerHTML = `Short URL: <a href="${shortUrl}" target="_blank" rel="noopener noreferrer">${shortUrl}</a>`;
             })
             .catch((error) => console.error(error));
     }
